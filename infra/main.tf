@@ -13,10 +13,3 @@ resource "aws_s3_bucket" "example-bucket2" {
     Name = "my-bucket"
   }
 }
-
-resource "aws_s3_bucket" "example-bucket3" {
-  bucket = "my-bucket3-ksjndfkjdsnfksdjnfksjndfj"
-  tags = {
-    Name = "my-bucket"
-  }
-}
