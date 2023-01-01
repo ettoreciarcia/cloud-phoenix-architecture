@@ -10,9 +10,9 @@ module "vpc" {
   name = format("VPC-%s-%s", local.application_name, local.environment)
   cidr = var.cidr
   azs = var.azs
-  public_subnets = var.public_subnets
+  public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
-  database_subnets = var.database_subnets
+  intra_subnets   = var.database_subnets
 
   enable_nat_gateway = true
   single_nat_gateway = true
