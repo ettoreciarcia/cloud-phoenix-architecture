@@ -40,3 +40,11 @@ module "middleware" {
 
   tags = local.common_tags
 }
+
+module infra {
+  source = "../../infra"
+
+  
+
+  tags = local.common_tags
+}
