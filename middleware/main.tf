@@ -55,7 +55,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
-  subnets            = [for id in module.vpc.public_subnets : id]
+  #subnets            = [for id in module.vpc.public_subnets : id]
 
   ip_address_type            = "ipv4"
   idle_timeout                = 60
