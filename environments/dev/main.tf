@@ -25,6 +25,7 @@ provider "aws" {
 
 module "components-cloud-phoenix-architecture" {
   source = "../../infra"
+  tags = local.common_tags
 }
 
 module "middleware" {
@@ -41,10 +42,3 @@ module "middleware" {
   tags = local.common_tags
 }
 
-module infra {
-  source = "../../infra"
-
-  
-
-  tags = local.common_tags
-}
