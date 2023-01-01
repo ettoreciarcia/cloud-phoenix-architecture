@@ -26,9 +26,6 @@ resource "aws_eip" "nat" {
   vpc = true
 }
 
-resource "aws_eip" "load_balancer" {
-  vpc = true
-}
 resource "aws_security_group" "alb-sg" {
   name        = "${local.application_name}-${local.environment}-alb-sg"
   description = "Security group for alb"
@@ -55,27 +52,11 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
-  #subnets            = [for id in module.vpc.public_subnets : id]
+  subnets            = [for id in module.vpc.public_subnets : id]
 
   ip_address_type            = "ipv4"
   idle_timeout                = 60
   enable_deletion_protection = false
-
-
-  subnet_mapping {
-    subnet_id     = module.vpc.public_subnets[0]
-    allocation_id = aws_eip.load_balancer.id
-  }
-
-  subnet_mapping {
-    subnet_id     = module.vpc.public_subnets[1]
-    allocation_id = aws_eip.load_balancer.id
-  }
-
-  subnet_mapping {
-    subnet_id     = module.vpc.public_subnets[2]
-    allocation_id = aws_eip.load_balancer.id
-  }
 
 
   tags = var.tags
