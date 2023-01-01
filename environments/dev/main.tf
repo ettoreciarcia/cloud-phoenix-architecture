@@ -27,16 +27,16 @@ module "components-cloud-phoenix-architecture" {
   source = "../../infra"
 }
 
-# module "middleware" {
-#   source = "../../middleware"
+module "middleware" {
+  source = "../../middleware"
 
-#   name = "VPC-${var.application_name}-${var.environment}"
-#   azs = var.azs
-#   cidr = var.cidr
-#   public_subnets = var.public_subnets
-#   private_subnets = var.private_subnets
-#   database_subnets = var.database_subnets
+  
+  azs = var.azs
+  cidr = var.cidr
+  public_subnets = var.public_subnets
+  private_subnets = var.private_subnets
+  database_subnets = var.database_subnets
 
 
-#   tags = local.common_tags
-# }
+  tags = local.common_tags
+}
