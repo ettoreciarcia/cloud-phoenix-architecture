@@ -5,10 +5,6 @@ variable "tags" {
   description = "List tags to pass to resources"
 }
 
-variable "name" {
-  type = string
-  description = "Name to assign to the VPC"
-}
 
 variable "cidr" {
   type = string
@@ -19,7 +15,7 @@ variable "cidr" {
 variable "azs" {
   type = list(string)
   description = "List of Availability Zones"
-  default = ["eu-west-1a"]
+  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
 variable "public_subnets" {
