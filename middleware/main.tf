@@ -58,7 +58,6 @@ resource "aws_lb" "alb" {
   idle_timeout                = 60
   enable_deletion_protection = false
 
-
   tags = var.tags
 }
 
