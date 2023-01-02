@@ -179,7 +179,7 @@ resource "aws_ecs_service" "service" {
 //APPLICATION LOAD BALANCER TARGET GROUP AND LISTENER
 resource "aws_lb_target_group" "target_group" {
   name        = "${local.application_name}-${local.environment}-tg"
-  port        = 80
+  port        = "3000"
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
@@ -189,7 +189,7 @@ resource "aws_lb_target_group" "target_group" {
 
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = var.load_balancer_arn
-  port              = "80"
+  port              = "3000"
   protocol          = "HTTP"
   #certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
   #alpn_policy       = "HTTP2Preferred"
