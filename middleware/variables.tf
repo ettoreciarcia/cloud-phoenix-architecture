@@ -1,39 +1,39 @@
 
 variable "tags" {
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
   description = "List tags to pass to resources"
 }
 
 
 variable "cidr" {
-  type = string
+  type        = string
   description = "CIDR of the VPC"
-  default = "10.0.0.0/16"
+  default     = "10.0.0.0/16"
 }
 
 variable "azs" {
-  type = list(string)
+  type        = list(string)
   description = "List of Availability Zones"
-  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  default     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
 
 variable "public_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "List of public subnets"
-  default = ["10.0.1.0", "10.0.2.0", "10.0.3.0"]
+  default     = ["10.0.1.0", "10.0.2.0", "10.0.3.0"]
 }
 
 variable "private_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "List of application private subnets"
-  default = ["10.0.10.0", "10.0.11.0", "10.0.12.0"]
+  default     = ["10.0.10.0", "10.0.11.0", "10.0.12.0"]
 }
 
 variable "database_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "List of database private subnets"
-  default = ["10.0.20.0", "10.0.21.0", "10.0.22.0"]
+  default     = ["10.0.20.0", "10.0.21.0", "10.0.22.0"]
 }
 
 # variable "enable_dns_support" {

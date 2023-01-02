@@ -73,7 +73,26 @@ resource "aws_ecs_task_definition" "service" {
       ]
     }
   ])
+}
 
+resource "aws_security_group" "ecs_service_sg" {
+  name        = "ecs_service_sg_${local.application_name}_${local.environment}"
+  description = "Security group for ECS service"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 //ECS SERVICE
@@ -84,6 +103,12 @@ resource "aws_ecs_service" "cloud-phoenix-app" {
   desired_count   = 1
   #iam_role        = aws_iam_role.ecs_service_role.arn
   #depends_on      = [aws_iam_policy_attachment.ecs_service_policy_attachment]
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_service_sg.id]
+    subnets          = var.private_subnets
+    assign_public_ip = false
+  }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
