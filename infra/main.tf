@@ -154,7 +154,7 @@ resource "aws_security_group" "ecs_service_sg" {
 
 //ECS SERVICE
 resource "aws_ecs_service" "cloud-phoenix-app" {
-  name            = "${local.application_name}-${local.environment}-service"
+  name            = "service-cloud-phoenix-app"
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
