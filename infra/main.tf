@@ -81,8 +81,8 @@ resource "aws_ecs_service" "cloud-phoenix-app" {
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
-  iam_role        = aws_iam_role.ecs_service_role.arn
-  depends_on      = [aws_iam_policy_attachment.ecs_service_policy_attachment]
+  #iam_role        = aws_iam_role.ecs_service_role.arn
+  #depends_on      = [aws_iam_policy_attachment.ecs_service_policy_attachment]
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
@@ -91,55 +91,6 @@ resource "aws_ecs_service" "cloud-phoenix-app" {
   }
 }
 
-resource "aws_iam_role" "ecs_service_role" {
-  name = "ecs_service_role_${local.application_name}_${local.environment}"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ecs.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_policy" "ecs_service_policy" {
-  name   = "ecs_service_policy_${local.application_name}_${local.environment}"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  " Statement": [
-    {
-      "Action": [
-        "ecs:CreateService",
-        "ecs:UpdateService",
-        "ecs:DeleteService",
-        "ecs:ListTasks",
-        "ecs:DescribeTasks",
-        "ecs:StopTask",
-        "ecs:StartTask"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_policy_attachment" "ecs_service_policy_attachment" {
-  name       = "ecs_service_policy_attachment_${local.application_name}_${local.environment}"
-  policy_arn = aws_iam_policy.ecs_service_policy.arn
-  roles      = [aws_iam_role.ecs_service_role.name]
-}
 
 //APPLICATION LOAD BALANCER TARGET GROUP AND LISTENER
 resource "aws_lb_target_group" "target_group" {
