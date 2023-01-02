@@ -56,7 +56,8 @@ resource "aws_ecr_repository" "ecr_repository" {
 
 //ECS TASK DEFINITION
 resource "aws_ecs_task_definition" "service" {
-  family = "service"
+  family                   = "service-${local.application_name}-${local.environment}"
+  requires_compatibilities = ["FARGATE"]
   container_definitions = jsonencode([
     {
       name      = "${local.application_name}-${local.environment}-app"
