@@ -54,6 +54,53 @@ resource "aws_ecr_repository" "ecr_repository" {
   }
 }
 
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecs_task_execution_role_${local.application_name}_${local.environment}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_permissions" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecr_permissions.arn
+}
+
+resource "aws_iam_policy" "ecr_permissions" {
+  name = "ecr_permissions_${local.application_name}_${local.environment}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": "*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+
 //ECS TASK DEFINITION
 resource "aws_ecs_task_definition" "service" {
   family                   = "service-${local.application_name}-${local.environment}"
@@ -61,6 +108,8 @@ resource "aws_ecs_task_definition" "service" {
   network_mode             = "awsvpc"
   cpu                      = 256
   memory                   = 512
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
   container_definitions = jsonencode([
     {
       name      = "${local.application_name}-${local.environment}-app"
