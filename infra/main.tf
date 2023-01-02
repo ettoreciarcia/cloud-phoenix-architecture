@@ -103,7 +103,7 @@ EOF
 
 //ECS TASK DEFINITION
 resource "aws_ecs_task_definition" "service" {
-  family                   = "service-${local.application_name}-${local.environment}"
+  family                   = "taskdef-${local.application_name}-${local.environment}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 256
@@ -155,6 +155,7 @@ resource "aws_security_group" "ecs_service_sg" {
 //ECS SERVICE
 resource "aws_ecs_service" "cloud-phoenix-app" {
   name            = "${local.application_name}-${local.environment}"
+  pattern         = "[a-zA-Z0-9\\-_]+"
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
