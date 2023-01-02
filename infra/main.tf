@@ -60,13 +60,13 @@ resource "aws_ecs_task_definition" "service" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 256
-  memory                   = 128
+  memory                   = 512
   container_definitions = jsonencode([
     {
       name      = "${local.application_name}-${local.environment}-app"
       image     = aws_ecr_repository.ecr_repository.repository_url
-      cpu       = 10
-      memory    = 128
+      cpu       = 256
+      memory    = 512
       essential = true
       portMappings = [
         {
