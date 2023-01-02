@@ -154,7 +154,7 @@ resource "aws_security_group" "ecs_service_sg" {
 
 //ECS SERVICE
 resource "aws_ecs_service" "service" {
-  name            = "cloud-phoenix-dev"
+  name            = "${local.application_name}-${local.environment}-service"
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
@@ -170,7 +170,7 @@ resource "aws_ecs_service" "service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "${local.application_name}-${local.environment}-container}"
+    container_name   = "${local.application_name}-${local.environment}"
     container_port   = 3000
   }
 }
