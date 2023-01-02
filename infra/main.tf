@@ -58,6 +58,9 @@ resource "aws_ecr_repository" "ecr_repository" {
 resource "aws_ecs_task_definition" "service" {
   family                   = "service-${local.application_name}-${local.environment}"
   requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = 256
+  memory                   = 128
   container_definitions = jsonencode([
     {
       name      = "${local.application_name}-${local.environment}-app"
@@ -73,6 +76,11 @@ resource "aws_ecs_task_definition" "service" {
       ]
     }
   ])
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
 }
 
 resource "aws_security_group" "ecs_service_sg" {
