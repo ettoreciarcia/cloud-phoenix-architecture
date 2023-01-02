@@ -112,7 +112,7 @@ resource "aws_ecs_task_definition" "service" {
 
   container_definitions = jsonencode([
     {
-      name      = "${local.application_name}-${local.environment}-app"
+      name      = "${local.application_name}-${local.environment}"
       image     = aws_ecr_repository.ecr_repository.repository_url
       cpu       = 256
       memory    = 512
