@@ -24,16 +24,18 @@ provider "aws" {
 }
 
 module "components-cloud-phoenix-architecture" {
-  source            = "../../infra"
+  source = "../../infra"
+
   tags              = local.common_tags
   load_balancer_arn = module.middleware.load_balancer_arn
   vpc_id            = module.middleware.vpc_id
   private_subnets   = module.middleware.private_subnets
+  host_header       = var.host_header
+  region            = var.region
 }
 
 module "middleware" {
   source = "../../middleware"
-
 
   azs              = var.azs
   cidr             = var.cidr

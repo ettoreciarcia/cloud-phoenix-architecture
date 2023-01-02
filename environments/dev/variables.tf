@@ -43,3 +43,7 @@ variable "database_subnets" {
   description = "The subnets associated with the task or service"
 }
 
+variable "host_header" {
+  type        = string
+  description = "The host header to use in the listener rule"
+}

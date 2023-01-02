@@ -125,6 +125,7 @@ resource "aws_ecs_task_definition" "service" {
         "logDriver" : "awslogs",
         "options" : {
           "awslogs-stream-prefix" : "ecs",
+          "awslogs-region" : var.region,
           "awslogs-group" : aws_cloudwatch_log_group.log_group.name
         }
       }
@@ -213,4 +214,5 @@ resource "aws_lb_listener" "listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group.arn
   }
+
 }
