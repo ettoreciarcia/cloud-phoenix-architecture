@@ -178,10 +178,11 @@ resource "aws_ecs_service" "service" {
 
 //APPLICATION LOAD BALANCER TARGET GROUP AND LISTENER
 resource "aws_lb_target_group" "target_group" {
-  name     = "${local.application_name}-${local.environment}-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  name        = "${local.application_name}-${local.environment}-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
 
   tags = var.tags
 }
