@@ -13,6 +13,13 @@ resource "aws_s3_bucket" "example-bucket" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "/aws/ecs/${local.application_name}-${local.environment}"
+  retention_in_days = 1
+
+  tags = var.tags
+}
+
 
 //ECS CLUSTER
 module "ecs" {
@@ -112,11 +119,19 @@ resource "aws_ecs_task_definition" "service" {
 
   container_definitions = jsonencode([
     {
-      name      = "${local.application_name}-${local.environment}"
-      image     = aws_ecr_repository.ecr_repository.repository_url
+      name  = "${local.application_name}-${local.environment}",
+      image = aws_ecr_repository.ecr_repository.repository_url,
+      logConfiguration : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-stream-prefix" : "ecs",
+          "awslogs-group" : aws_cloudwatch_log_group.log_group.name
+        }
+      }
       cpu       = 256
       memory    = 512
       essential = true
+
       portMappings = [
         {
           containerPort = 3000
