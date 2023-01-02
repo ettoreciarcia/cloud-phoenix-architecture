@@ -1,6 +1,6 @@
 locals {
   application_name = var.tags["Application"]
-  environment = var.tags["Environment"]
+  environment      = var.tags["Environment"]
 }
 
 
@@ -76,31 +76,70 @@ resource "aws_ecs_task_definition" "service" {
 }
 
 //ECS SERVICE
-# resource "aws_ecs_service" "mongo" {
-#   name            = "service-${local.application_name}-${local.environment}"
-#   cluster         = module.ecs.cluster_id
-#   task_definition = aws_ecs_task_definition.service.arn
-#   desired_count   = 1
-#   iam_role        = aws_iam_role.foo.arn
-#   depends_on      = [aws_iam_role_policy.foo]
+resource "aws_ecs_service" "cloud-phoenix-app" {
+  name            = "service-${local.application_name}-${local.environment}"
+  cluster         = module.ecs.cluster_id
+  task_definition = aws_ecs_task_definition.service.arn
+  desired_count   = 1
+  iam_role        = aws_iam_role.ecs_service_role.arn
+  depends_on      = [aws_iam_policy_attachment.ecs_service_policy_attachment]
 
-#   ordered_placement_strategy {
-#     type  = "binpack"
-#     field = "cpu"
-#   }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group.arn
+    container_name   = "${local.application_name}-${local.environment}-container}"
+    container_port   = 3000
+  }
+}
 
-#   load_balancer {
-#     target_group_arn = aws_lb_target_group.foo.arn
-#     container_name   = "mongo"
-#     container_port   = 8080
-#   }
+resource "aws_iam_role" "ecs_service_role" {
+  name = "ecs_service_role_${local.application_name}_${local.environment}"
 
-#   placement_constraints {
-#     type       = "memberOf"
-#     expression = "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"
-#   }
-# }
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
 
+resource "aws_iam_policy" "ecs_service_policy" {
+  name   = "ecs_service_policy_${local.application_name}_${local.environment}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  " Statement": [
+    {
+      "Action": [
+        "ecs:CreateService",
+        "ecs:UpdateService",
+        "ecs:DeleteService",
+        "ecs:ListTasks",
+        "ecs:DescribeTasks",
+        "ecs:StopTask",
+        "ecs:StartTask"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "ecs_service_policy_attachment" {
+  name       = "ecs_service_policy_attachment_${local.application_name}_${local.environment}"
+  policy_arn = aws_iam_policy.ecs_service_policy.arn
+  roles      = [aws_iam_role.ecs_service_role.name]
+}
 
 //APPLICATION LOAD BALANCER TARGET GROUP AND LISTENER
 resource "aws_lb_target_group" "target_group" {
