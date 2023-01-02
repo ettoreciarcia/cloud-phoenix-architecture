@@ -153,8 +153,8 @@ resource "aws_security_group" "ecs_service_sg" {
 }
 
 //ECS SERVICE
-resource "aws_ecs_service" "cloud-phoenix-app" {
-  name            = "service-cloud-phoenix-app"
+resource "aws_ecs_service" "service" {
+  name            = "cloud-phoenix-dev"
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
