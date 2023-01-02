@@ -101,6 +101,7 @@ resource "aws_ecs_service" "cloud-phoenix-app" {
   cluster         = module.ecs.cluster_id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
+  launch_type     = "FARGATE"
   #iam_role        = aws_iam_role.ecs_service_role.arn
   #depends_on      = [aws_iam_policy_attachment.ecs_service_policy_attachment]
 
